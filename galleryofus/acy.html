@@ -1,25 +1,25 @@
+<!DOCTYPE html>
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
-    <title>关于我们</title>
+    <title>hy❤acy</title>
     <style>
-        body {
-            background: linear-gradient(to bottom, #f0f8ff, #e0ebeb);
-            font-family: Arial, sans-serif;
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            width: 100%;
+            height: 100%;
+            background: #f7f7f7 url("") repeat fixed;
         }
-        .header {
-            text-align: center;
-            padding: 2rem 0;
-        }
-        .header h1 {
-            font-size: 2.5em;
-            margin-bottom: 0.5em;
-        }
-        .gallery {
+.gallery {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 1rem;
             justify-content: center;
+z-index:99;
+margin-top:120px;
         }
         .gallery img {
             border-radius: 10px;
@@ -33,14 +33,16 @@
             transform: scale(1.05);
             box-shadow: 0 0 10px rgba(0,0,0,0.3);
         }
+h1 { text-align:center; 
+font-color:pink;} 
     </style>
 </head>
 <body>
 
-<header class="header">
-    <h1>hy❤acy</h1>
-</header>
+<canvas id="petalCanvas">
 
+</canvas>
+ <h1>hy❤acy</h1>
 <div class="gallery">
     <!-- 请在此处添加你的图片链接，示例如下 -->
     <img src="6.jpg" alt="">
@@ -48,6 +50,67 @@
 <img src="3.jpg" alt=""><img src="4.jpg" alt=""><img src="5.jpg" alt="">
     <!-- 重复以上代码行以包含更多图片 -->
 </div>
+<script>
+    // 设置画布宽高
+    const canvas = document.getElementById('petalCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // 樱花瓣构造函数
+    function Petal(x, y, radius, dx, dy, color) {
+        this.x = x;
+        this.y = y;
+        this.radius = radius;
+        this.dx = dx;
+        this.dy = dy;
+        this.color = color;
+    }
+
+    Petal.prototype.draw = function() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI*2, false);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+    };
+
+    Petal.prototype.update = function() {
+        if (this.x + this.radius > canvas.width || this.x - this.radius < 0) {
+            this.dx = -this.dx;
+        }
+        if (this.y + this.radius > canvas.height || this.y - this.radius < 0) {
+            this.dy = -this.dy;
+        }
+
+        this.x += this.dx;
+        this.y += this.dy;
+        this.draw();
+    };
+
+    // 初始化花瓣数组
+    let petals = [];
+    for (let i = 0; i < 100; i++) { // 根据需要调整花瓣数量
+        let radius = Math.random() * 10 + 5; // 随机半径
+        let x = Math.random() * (canvas.width - radius * 2) + radius;
+        let y = Math.random() * (canvas.height - radius * 2) + radius;
+        let dx = (Math.random() - 0.5) * 2; // x方向速度
+        let dy = (Math.random() - 0.5) * 2; // y方向速度
+        let color = `#${((Math.random() * 0xffffff) << 0).toString(16)}`; // 随机颜色
+        petals.push(new Petal(x, y, radius, dx, dy, color));
+    }
+
+    // 动画循环
+    function animate() {
+        requestAnimationFrame(animate);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        for (let i = 0; i < petals.length; i++) {
+            petals[i].update();
+        }
+    }
+
+    animate();
+</script>
 
 </body>
 </html>
